@@ -1,0 +1,32 @@
+# 方法：动态规划
+# DP三连：要求什么？结果怎么来？建立状态转移！
+# 我的分析：
+# 	要求最终的最低花费，我们用 min(cost_s(i)) 表示，它由上阶段来，上阶段有两种：一步之前、两步之前，因此建立状态转移应该是：min(cost_s(i)) = min{(cost_s(i-1))+cost(i), cost_s(i-2)+cost(i)}，这个状态转移有两种前提：从 0 开始、从 1 开始。
+	class Solution:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        dp0, dp1 = cost[0], cost[1]  # 这里的 dp0 和 dp1 是赋初始状态
+        for i in range(2, len(cost)):
+            dp = cost[i] + min(dp0, dp1)  # 这个是状态转移方程，这里的 dp0 和 dp1 是指分别从 i-2 和 i-1 来的 cost 值（即可能的两种上阶段状态值）
+            dp0, dp1 = dp1, dp   # 这里是指随着 i 的增加，前面两个阶段的值也在更新，类似于我画的那个简图
+        return min(dp0, dp1)   # 因为最终状态可以是最后那个的索引 i 走一步，或者倒数第二个的那个索引 i-1 走两步，所以这里是两个的最小值。
+		
+
+# 这是我第一次写的，我混淆了动态规划和递归，动态规划不是函数的自调用，而其本质是状态的转移，所以哪里不应该是函数，应该是状态值来索引！
+class Solution:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        l = len(cost)
+        for i in range(l):
+            # 从 0 开始
+            cost_s1 = min(minCostClimbingStairs(self, cost[0:i])+cost[i], minCostClimbingStairs(self, cost[0:i-1])+cost[i])
+            # 从 1 开始
+            cost_s2 = min(minCostClimbingStairs(self, cost[1:i])+cost[i], minCostClimbingStairs(self, cost[1:i-1])+cost[i])
+        return min(cost_s1, cost_s2)
+		
+
+################# 网上的参考：另建立了数组，增加了空间复杂度。################
+class Solution:
+    def minCostClimbingStairs(self, cost: List[int]) -> int:
+        f = [cost[0], cost[1]]
+        for i in range(2, len(cost)):
+            f.append(cost[i] + min(f[i-1], f[i-2]))
+        return min(f[-1], f[-2])

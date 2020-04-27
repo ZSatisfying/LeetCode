@@ -1,0 +1,6 @@
+# 外连接（因为不是每个person都有address，所以不能用inner join）
+# left outer join，因为要保留左表的全部数据，因此要用左连接
+select 
+	FirstName, LastName, City, State 
+	from Person left join Address
+	on Person.PersonId = Address.PersonId

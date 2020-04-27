@@ -1,0 +1,20 @@
+# 方法：
+# 字符串长度的操作（两种），字符串和列表的相互转换
+def reverse_s(strs):
+    strs = list(strs)   # 长度为 5
+    left, right = 0, len(strs) - 1
+    while left < right:
+        strs[left], strs[right] = strs[right], strs[left]
+        left, right = left + 1, right - 1
+    return "".join(strs)
+    
+class Solution:
+    def reverseWords(self, s: str) -> str:
+        s = s.split()
+        l = len(s)    # 长度为 4
+        result = []
+        for i in range(l):
+            result.append(reverse_s(s[i]))
+        return " ".join(result)
+    
+    

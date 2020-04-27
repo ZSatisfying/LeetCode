@@ -1,0 +1,13 @@
+# 方法一：把字母对应的数值存在哈希表中，遍历字符串，I在V、X前面，X在L、C前面，C在D、M前面，那么都是后面数减去前面数，否则直接加起来即可
+# 时间复杂度：O(n)
+class Solution:
+    def romanToInt(self, s: str) -> int:
+        hashmap = {'I':1, 'V':5, 'X':10, 'L':50, 'C':100, 'D':500, 'M':1000}
+        result = hashmap[s[0]]
+        for i in range(1, len(s)):
+            if (s[i] in ['V', 'X'] and s[i-1] == 'I') or (s[i] in ['L', 'C'] and s[i-1] == 'X') or (s[i] in ['D', 'M'] and s[i-1] == 'C'):
+                result += hashmap[s[i]]
+                result -= 2*hashmap[s[i-1]]
+            else:
+                result += hashmap[s[i]]
+        return result

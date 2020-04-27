@@ -1,0 +1,51 @@
+# 方法一：滤除数字、字母以外的字符，再比较输出
+# 时间复杂度：O(n)
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        s = s.lower()   # 大小写转换不改变原字符串！
+        tmp = []
+        for item in s:
+            if ('a' <= item <= 'z') or ('0' <= item <= '9'):
+                tmp.append(item)
+        return tmp == tmp[::-1]
+		
+		
+# 方法二：双指针，判断头指针/尾指针是否相同（记得跳过不是字母数字的字符）
+# 时间复杂度：O(n)
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        l = len(s)
+        i, j = 0, l-1
+        s = s.lower()
+        while i < j:
+            if (('a' <= s[i] <= 'z') or ('0' <= s[i] <= '9')) and (('a' <= s[j] <= 'z') or ('0' <= s[j] <= '9')):
+                if s[i] == s[j]:
+                    i += 1
+                    j -= 1
+                else:
+                    return False
+            elif not (('a' <= s[i] <= 'z') or ('0' <= s[i] <= '9')):
+                i += 1
+            elif not (('a' <= s[j] <= 'z') or ('0' <= s[j] <= '9')):
+                j -= 1
+        return True
+		
+		
+# 方法三：正则模块的应用
+# 时间复杂度：O(n)
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        tmp = re.sub("[^A-Za-z0-9]","", s).lower()
+        return tmp == tmp[::-1]
+
+
+# 方法四：str.isalnum()的使用
+# 时间复杂度：O(n)
+class Solution:
+    def isPalindrome(self, s: str) -> bool:
+        s = s.lower()
+        tmp = []
+        for i in range(len(s)):
+            if s[i].isalnum():
+                tmp.append(s[i])
+        return tmp == tmp[::-1]

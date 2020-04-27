@@ -1,0 +1,70 @@
+# 方法一：暴力法（两层遍历）。
+# 第一次遍历查一个数，第二次遍历查是否存在一个数等于target-第一个数。
+# 时间复杂度：O(n^2)
+# 空间复杂度：O(1)
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        l = len(nums)
+        result = []
+        for i in range(l):
+            for j in range(i+1, l):
+                if nums[j] == target - nums[i]:
+                    result.append(i)
+                    result.append(j)
+                    break
+        return result
+		
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        length = len(nums)
+        for i in range(length-1):
+            for j in range(i+1, length):  # 第二个数索引从 i+1 开始
+                if nums[j] == target - nums[i]:
+                    return [i, j]
+        return None
+		
+
+# 方法二：哈希表。
+# 保证元素及其索引相互对应最有效的方式是：哈希表。
+# 时间复杂度：O(n)
+# 空间复杂度：O(n)。哈希表：以空间换时间
+
+# 测试用例：nums = [3, 3, 1, 4]，target = 5。虽然前两位元素重复了，但好在3并不满足条件，因此 hashmap[3]=0 再更新为 hashmap[3]=1 并不影响结果。
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:   
+        hashmap = {}
+        for index, num in enumerate(nums):
+            if (target - num) in hashmap:
+                return [index, hashmap[target-num]]
+            hashmap[num] = index     # 只将不能满足条件的键值对存入。
+        return None
+
+
+######### 下面是两种错误示范 ##########
+
+# 第一种：无法找到值对应的键。解决方法：把元素本身作为key，索引作为value。
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:    
+        hash = dict()   # 构建哈希表的两种方式：dict() 或 {}
+        length = len(nums)
+        for i in range(length):   # 将元素都存入哈希表，键是相应的索引值
+            hash[i] = nums[i]
+        for i in range(length):
+            if (target - hash[i]) in hash.values():
+                j = hash.get(target - hash[i])   # 错误！.get()函数，是获得键k对应的值values。Python3中没有通过值索引键的方式，所以要转换思想，把元素值作为键，索引值作为values
+                return [i, j]
+        return None
+		
+# 第二种：出现了冲突。解决方法：不建立完整的哈希表，如果 target-num 存在于 nums 中，则直接输出索引，而不将键值对存入哈希表。
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:   
+        hash = dict()  
+        length = len(nums)
+        for i in range(length):   
+            hash[nums[i]] = i   # 使用元素值作为键，出现了冲突。例如nums=[3,3]，target=6，输出了None。也不可！
+        for item in nums:
+            if target-item in hash.keys() and hash[target-item] != hash[item]:
+                return [hash[target-item], hash[item]]
+        return None
+		
+            

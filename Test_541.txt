@@ -1,0 +1,33 @@
+# 方法：递归
+# 重点在于反转区间的判断，方法如下：
+	1. 若长度小于 k，则翻转所有；
+	2. 若长度大于等于 k，小于 2k，则翻转前 k 个；
+	3. 若长度大于 2k，则翻转这 2k 个中的前 k 个，再递归检查除去这 2k 个元素剩下的字符串长度，由此作 1/2/3 的操作。
+# 翻转函数，start 和 end 是翻转区间的索引起始（包含 start 和 end）
+def reverse_Str(s, start, end):
+    left, right = start, end
+    while left < right:
+        s[left], s[right] = s[right], s[left]
+        left, right = left + 1, right - 1
+    return s
+
+class Solution:
+    def reverseStr(self, s: str, k: int) -> str:
+        l = len(s)
+        s = list(s)
+        if k <= l < 2 * k:
+            return "".join(reverse_Str(s, 0, k - 1))
+        elif l < k:
+            return "".join(reverse_Str(s, 0, l - 1))
+        else:
+            start, end = 0, l - 1
+            while end - start + 1 >= 2 * k:
+                reverse_Str(s, start, start + k - 1)
+                start = start + 2 * k
+            if end - start >= k:
+                return "".join(reverse_Str(s, start, start + k - 1))
+            else:
+                return "".join(reverse_Str(s, start, end))
+    
+    
+        

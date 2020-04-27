@@ -1,0 +1,9 @@
+# 方法一：使用 itertools 工具
+# itertools.permutations(nums)：功能是返回 nums 的全排列（无重复元素）
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        return itertools.permutations(nums)
+		
+
+# 方法二：回溯法
+# 时间复杂度：O()

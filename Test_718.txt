@@ -1,0 +1,81 @@
+# 方法一：暴力法（超时）
+# 时间复杂度：O(n * m * min(n,m))
+class Solution:
+    def findLength(self, A: List[int], B: List[int]) -> int:
+        result = 0
+        for i in range(len(A)):
+            for j in range(len(B)):
+                for k in range(1, min(len(A), len(B))+1-j):   # 这里加了k不能超过数组长度！不然会出错！
+                    if A[i:i + k] == B[j:j + k]:
+                        result = k if k > result else result
+                    else:
+                        break
+        return result
+		
+		
+# 方法二：二分查找（left,right分别初始化为0，min(len(A), len(B))，mid是输入到seen函数里的length，如果没有mid长度的，则长度往下找；若有mid长度的，那么mid长度再往上找，看是否存在比mid更长的长度）
+# 时间复杂度：O((m*n) * min(m,n)log(min(m,n)))
+# 超时
+
+# 该函数判断两个字符串A和B是否存在length长度的公共子序列！！！
+def seen(A, B, length):
+    for i in range(len(A)-length+1):
+        for j in range(len(B)-length+1):
+            # if A[i: min(i+length, len(A))] == B[j: min(j+length, len(B))]:   # 这句保证不了length的长度！！！
+            if A[i: i+length] == B[j: j+length]:
+                return True
+    return False
+
+class Solution:
+    def findLength(self, A: List[int], B: List[int]) -> int:
+        result = 0
+        left, right = 0, min(len(A), len(B))
+        mid = (left + right) // 2
+        while left <= right:
+            if seen(A, B, mid):
+                result = mid if result < mid else result
+                left = mid + 1
+                mid = (left + right) //2
+            else:
+                right = mid - 1
+                mid = (left + right) //2
+        return result
+		
+		
+# 方法三：动态规划（一步步调试之后我发现，原理就是确定一个被比较的字符串，例如这里是A，那么用B和它进行比较，j开始循环，若A[i]==B[j]，那么说明这个相等，那么dp[i][j]=dp[i+1][j+1]+1，否则dp[i][j]=0，画出来就是对角线加一那个。。。）
+# 时间复杂度：O(m*n)
+class Solution:
+    def findLength(self, A: List[int], B: List[int]) -> int:
+        dp = [[0] * (len(B)+1) for _ in range(len(A)+1)]
+        for i in range(len(A) - 1, -1, -1):
+            for j in range(len(B) - 1, -1, -1):
+                if A[i] == B[j]:
+                    dp[i][j] = dp[i + 1][j + 1] + 1
+                else:
+                    dp[i][j] = 0
+        # return max(dp[i][j] for i in range(len(A)) for j in range(len(B)))
+        return max(max(row) for row in dp)
+		
+# 我重写的（从后往前比较，换一下循环顺序）
+class Solution:
+    def findLength(self, A: List[int], B: List[int]) -> int:
+        dp = [[0] * (len(A) + 1) for _ in range(len(B) + 1)]   # 注意这里的顺序和后面两个for的顺序对应
+        for i in range(len(B)-1, -1, -1):
+            for j in range(len(A)-1, -1, -1):
+                if A[j] == B[i]:
+                    dp[i][j] = dp[i+1][j+1] + 1
+                else:
+                    dp[i][j] = 0
+        return max(dp[i][j] for i in range(len(B)) for j in range(len(A)))
+		
+# 我重写的（从前往后比较）
+class Solution:
+    def findLength(self, A: List[int], B: List[int]) -> int:
+        dp = [[0] * (len(A) + 1) for _ in range(len(B)+1)]   # dp有len(B)+1行
+        for i in range(1, len(B)+1):
+            for j in range(1, len(A)+1):
+                if A[j-1] == B[i-1]:
+                    dp[i][j] = dp[i-1][j-1] + 1
+                else:
+                    dp[i][j] = 0
+        return max(max(row) for row in dp)

@@ -1,0 +1,68 @@
+# 方法一：栈操作，不使用哈希表（仅适用于符号类型较少的情况）
+# 逐个读取字符串 s，若栈为空，那么该元素压入栈中；若栈不为空，那么比较当前元素是否和栈顶元素匹配，若匹配则弹出栈顶元素，若不匹配则压入栈中；最终判断栈是否为空。
+# 时间复杂度：O(n)
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        if s == []: 
+            return True
+        elif len(s) % 2 != 0: 
+            return False
+        else:
+            for ch in s:
+                if stack == []:
+                    stack.append(ch)
+                else:
+                    if ch == ")" and stack[-1] == "(":   # stack[-1] 是指栈顶元素（因为 [-1] 索引字符串最后一个元素）
+                        stack.pop()
+                    elif ch == "]" and stack[-1] == "[":
+                        stack.pop()
+                    elif ch == "}" and stack[-1] == "{":
+                        stack.pop()
+                    else:
+                        stack.append(ch)
+            return stack == []
+################## 我最初的写法 ####################
+#### 是错的，因为栈不是 Python 的内建类型，需要用 Python 列表来模拟基于数组的栈。列表只能用 .append() 和 .pop()，而栈操作 .peek() 和 .isEmpty() 不能直接使用。
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        if s == []: 
+            return True
+        elif len(s) % 2 != 0: 
+            return False
+        else:
+            for ch in s:
+                if stack == []:
+                    stack.push(ch)
+                else:
+                    if ch == "(" and stack.peek() == ")":
+                        stack.pop()
+                    elif ch == "[" and stack.peek() == "]":
+                        stack.pop()
+                    elif ch == "{" and stack.peek() == "}":
+                        stack.pop()
+                    else:
+                        stack.push(ch)
+            return stack.isEmpty()
+
+
+# 方法二：栈操作，使用哈希表（适用于符号类型较多的情况）
+# 将匹配的符号建立哈希表（注意：要反的在前！），然后判断当前元素是否在哈希表中，若不在则直接压入栈；若在哈希表中则比较栈顶元素和哈希表中该元素作为 key 对应的 value 是否相同，若不同则返回False。
+# 时间复杂度：O(n)
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        hashmap = {")" : "(", "]" : "[", "}" : "{"}   # 建立哈希表。注意：符号都是反的！
+        for ch in s:
+            if ch in hashmap:   # 判断 ch 是否存在于哈希表中（.keys() 中）
+                top = stack.pop() if stack else "#"  # 若栈为空，那么栈顶元素置为 ‘#’（只要不是题目里的符号即可）
+                # if hashmap[ch] == top:     # 不能这样写，因为栈为空时不可弹出元素
+                #     stack.pop()       
+                if hashmap[ch] != top:
+                    return False
+            else:
+                stack.append(ch)
+        return not stack
+		
+''' 联系：都是先写反的符号，在写正的符号；区别：方法一是先判断才出栈，方法二是先出栈才判断 '''

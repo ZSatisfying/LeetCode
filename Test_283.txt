@@ -1,0 +1,56 @@
+# 方法一：类似于冒泡排序法的冒泡思想
+# 思路：循环次数为len(nums)-1，如果遇到0，那么交换比较的这两个相邻元素；否则直接后移指针即可。
+# 时间复杂度：O(n^2)
+# 空间复杂度：O(1)
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        l = len(nums)
+       
+        while l:   # 控制循环次数
+            i, j = 0, 1
+            while j < l:
+                if nums[i] == 0 and nums[j] != 0:
+                    nums[i], nums[j] = nums[j], nums[i]
+                i += 1
+                j += 1                    
+            l -= 1
+			
+			
+# 方法二：双指针、快慢指针（局部最优，需要写零很多次，执行很多次写操作）
+# 思路：定义两个指针，一快一慢，快指针用于判断该元素是否为0，慢指针用于存放非0元素，即如果快指针元素非零，那么放在慢指针的位置并且快、慢指针都加一；否则慢指针不动，快指针加一。
+# 时间复杂度：O(n)
+# 空间复杂度：O(1)
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        slow = 0
+        for fast in range(0, len(nums)):   # 这个for循环是关键
+            if nums[fast] != 0:
+                nums[slow] = nums[fast]
+                slow += 1
+				
+        for idx in range(slow, len(nums)):   # 补齐后面的0
+            nums[idx] = 0
+			
+			
+# 方法三：最优操作
+# 思路：和方法二很像，要求慢指针之前的元素全为非0，慢指针和快指针之间的元素都为0，这个方法不是最后才补齐0，而是交换零元素和非零元素。
+# 时间复杂度：O(n)
+# 空间复杂度：O(1)
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        slow = 0
+        for fast in range(0, len(nums)):
+            if nums[fast] == 0:
+                fast = fast + 1
+            else:
+                nums[slow], nums[fast] = nums[fast], nums[slow]
+                slow, fast = slow + 1, fast + 1

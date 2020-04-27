@@ -1,0 +1,34 @@
+# 思路：第一个和最后一个不能同时偷，因此就转换成了 nums[0:len(nums)-1] 和 nums[1:len(nums)] 即nums[1:]（去掉第一个）, nums[:-1]（去掉最后一个）基本的打家劫舍问题。
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        if nums == []:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        # 待偷的序列：nums[0: len(nums)](即确定不偷最后一个)
+        dp0 = [0, nums[0]]
+        for i in range(2, len(nums)):
+            dp0.append(max(dp0[i-1], dp0[i-2]+nums[i-1]))
+            
+        # 待偷的序列：nums[1: len(nums)+1]（即确定不偷第一个，所以我们把第一个的数值置为0）
+        dp1 = [0, 0, nums[1]]
+        for j in range(3, len(nums)+1):
+            dp1.append(max(dp1[j-1], dp1[j-2]+nums[j-1]))
+        return max(dp0[-1], dp1[-1])
+		
+		
+############# 优化后的代码：把相同功能/结构的语句写成函数 ##############
+# Test_198 打家劫舍中的函数
+def house_rob(nums):
+    dp = [0, nums[0]]
+    for i in range(2, len(nums)+1):
+        dp.append(max(dp[i-1], dp[i-2]+nums[i-1]))
+    return dp[-1]
+
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        if nums == []:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        return max(house_rob(nums[1:]), house_rob(nums[:-1]))

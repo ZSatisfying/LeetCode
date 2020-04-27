@@ -1,0 +1,38 @@
+# 方法一：双指针（从后往前）
+# 定义两个指针分别指向 nums1 的最后和 nums2 的最后，比较哪个更大，更大的放在 nums[m+n] 的最高位，依次往低位判断。
+# 从高位往地位判断不需要额外的空间，空间复杂度是O(1)，而从低位往高位判断则需要额外空间，空间复杂度是O(m)。
+# 时间复杂度：O(n+m)
+# 空间复杂度：O(1)
+class Solution:
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        """
+        Do not return anything, modify nums1 in-place instead.
+        """
+        if m == 0:
+            for c in range(n):
+                nums1[c] = nums2[c]   # 相较C语言实现里面的，多了一个 nums1 数组为空的情况。nums2 为空不用另外判断。
+        i, j, l = m - 1, n - 1, m + n - 1
+        while(i >=0 and j >= 0):
+            if nums1[i] >= nums2[j]:
+                nums1[l] = nums1[i]
+                i = i - 1
+            else:
+                nums1[l] = nums2[j]
+                j = j - 1
+            l = l - 1
+        if j >= 0:    # 如果 nums2 还有剩余，则说明它们最小，把它们放在 nums1 的最低几位。
+            for count in range(j, -1, -1):
+                nums1[l] = nums2[count]
+                l = l - 1
+				
+				
+# 方法二：先连接两个数组，再排序。
+# 时间复杂度：O(n+m)log(n+m)。
+class Solution:
+    def merge(self, nums1: List[int], m: int, nums2: List[int], n: int) -> None:
+        """
+        Do not return anything, modify nums1 in-place instead.
+        """
+        nums1 = nums1[0:m] + nums2[0:n]    # 合并列表
+        nums1.sort()
+        

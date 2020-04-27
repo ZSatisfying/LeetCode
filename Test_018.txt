@@ -1,0 +1,48 @@
+# 方法一：暴力法。
+# 时间复杂度：O(n^4)
+# 略。
+
+# 方法二：双指针法。
+# 固定一个数，然后运用 threeSum 的方法。
+# 时间复杂度：O(n^3)
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        l = len(nums)
+        nums.sort()
+        result = []
+        if l > 4:
+            for i in range(l):
+                if i > 0 and nums[i] == nums[i-1]:   # 注意点1：要加 if i > 0 这个条件。
+                    continue
+                for j in range(i+1, l):
+                    if j > i+1 and nums[j] == nums[j-1]:   # 注意点2：要加 if j > i+1 这个条件。
+                        continue
+                    low, high = j+1, l-1
+                    while(low < high):
+                        tmp = nums[i] + nums[j] + nums[low] + nums[high]
+                        if tmp == target:
+                            result.append([nums[i], nums[j], nums[low], nums[high]])
+                            while low < high and nums[low] == nums[low+1]:    # 注意点3：要加 low < high 这个条件。
+                                low = low + 1
+                            while low < high and nums[high] == nums[high-1]:   # 注意点4：要加 low < high 这个条件。
+                                high = high - 1
+                            low, high = low+1, high-1
+                        elif tmp > target:
+                            high = high - 1
+                        else:
+                            low = low + 1
+            return result
+        elif l == 4 and sum(nums) == target:
+            return [nums]    # 注意点5：nums 两边要加 '[]' 这个符号。
+        else:
+            return []    # 注意点6：不符合条件，返回的是空，而不是 None。
+
+'''注意点 1 和 注意点2 原因在于，跳过重复元素不能是本次循环和上次循环比较，而是在本次循环内比较相邻元素，\
+	即单次大循环内，第一次小循环不剔除重复元素。例如：nums = [-4, -1, -1, 0, 1, 2]，target = -1，如果不加这两个条件，\
+	当 i = 1，j = 2 时这个情况，由于 nums[j=1] = nums[j=2] 相同，所以 j = 2 被跳过了，结果不正确。'''
+	
+'''如果不加 low < high 这个条件，那么索引溢出。'''
+
+
+# 方法三：哈希表。
+# 时间复杂度：

@@ -1,0 +1,17 @@
+# 方法一：排序。每次循环都进行一次重新排序。
+# 时间复杂度：O(nlogn * n)
+# 空间复杂度：O(n)
+class Solution:
+    def lastStoneWeight(self, stones: List[int]) -> int:
+        if len(stones) == 1:
+            return stones[0]
+        while stones != []:
+            sto_sort = sorted(stones, reverse=True)   # sorted和.sort()都默认是从小到大排列，
+            if sto_sort[0] == sto_sort[1]:
+                stones = sto_sort[2:]
+            else:
+                stones = sto_sort[2:]
+                stones.append(sto_sort[0]-sto_sort[1])
+            if len(stones) == 1:
+                return stones[0]
+        return 0

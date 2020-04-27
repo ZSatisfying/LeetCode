@@ -1,0 +1,11 @@
+# 思路：动态规划。因为不能偷相邻的两家，所以当前最大的金钱数记为dp[i]=max(dp[i-1], dp[i-2]+money[i])
+# 时间复杂度：O(N)
+# 空间复杂度：O(N)    # 这里官方题解说是O(1)，但我觉得应该是O(N)啊！？？？
+class Solution:
+    def rob(self, nums: List[int]) -> int:
+        if nums == []:
+            return 0
+        dp = [0, nums[0]]
+        for i in range(2, len(nums)+1):
+            dp.append(max(dp[i-1], dp[i-2]+nums[i-1]))   # 因为dp补了dp[0]=0，因此nums与dp对应的索引应该有一个错位！
+        return dp[-1]

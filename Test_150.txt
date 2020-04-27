@@ -1,0 +1,26 @@
+# 方法：栈操作（Python中没有内建栈操作，需要用列表的 .append() 和 .pop() 来模拟栈操作）
+# 遍历列表，如果没有遇到操作符，依次进栈。若遇到操作符，从栈顶弹出两个，做相应运算（注意弹出顺序和操作顺序的对应），并将操作结果压入栈，再等待后续操作，直到列表元素全部参与运算，最终弹出栈顶元素。
+# 时间复杂度：O(n)，因为只进行了一次遍历。进栈 即.append() 和出栈 即.pop() 的时间复杂度都是O(1)。
+class Solution:
+    def evalRPN(self, tokens: List[str]) -> int:
+        stack = []
+        for item in tokens:
+            if (item != "+") and (item != "-") and (item != "*") and (item != "/"):
+                stack.append(item)   # 进栈操作
+            else:
+                top1 = int(stack.pop())   # 弹出两个栈顶元素
+                top2 = int(stack.pop())
+                if item == "+":
+                    stack.append(top2 + top1)
+                elif item == "-":
+                    stack.append(top2 - top1)
+                elif item == "*":
+                    stack.append(top2 * top1)
+                else:                # 除法运算有点复杂（要考虑一正一负和元素为零的情况）
+                    if (top1 > 0 and top2 > 0) or (top1 < 0 and top2 < 0):
+                        stack.append(top2 // top1)
+                    elif top1 * top2 < 0:
+                        stack.append(-(-top2 // top1))
+                    else:
+                        stack.append(0)
+        return int(stack.pop())    # 列表元素都是字符类型(str)，所以要转换为整数输出。

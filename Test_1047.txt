@@ -1,0 +1,17 @@
+# 方法一：栈。遍历列表，若当前元素和栈顶元素相同，则弹出栈顶；否则将当前元素入栈。
+# 时间复杂度：O(n)
+# 空间复杂度：O(n)
+class Solution:
+    def removeDuplicates(self, S: str) -> str:
+        stack = []
+        for item in S:
+            if stack == []:
+                stack.append(item)
+            else:
+                tmp = stack.pop()
+                if tmp == item:
+                    continue
+                else:
+                    stack.append(tmp)
+                    stack.append(item)
+        return "".join(stack)  # 注意返回字符串形式！

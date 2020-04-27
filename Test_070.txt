@@ -1,0 +1,88 @@
+# 方法一：（暴力法）二叉递归树
+# 时间复杂度：O(2^N)，超时。
+# 空间复杂度：O(N)
+def climb_stairs(self, i: int, n: int) -> int:
+        if n < i:
+            return 0
+        elif n == i:
+            return 1
+        else:
+            return climb_stairs(self, i+1, n) + climb_stairs(self, i+2, n)
+        
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        return climb_stairs(self, 0, n)   # 这里 i 必须取 0，取 1 是错的，因为需要满足斐波那契数列中 n=0 时结果为 1。
+		
+		
+# 方法二：备忘法递归
+# 时间复杂度：O(N)
+# 空间复杂度：O(N)
+def climb_stairs(i, n ,memo) -> int:
+    if n < i:
+        return 0
+    elif n == i:
+		return 1
+    if memo != None:
+        return memo
+    else:
+        memo = climb_stairs(i+1, n, memo) + climb_stairs(i+2, n, memo)
+        return memo
+        
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        memo = None
+        return climb_stairs(0, n, memo)
+
+
+# 方法三：动态规划（大问题分解成最优子结构解决，从其子问题的最优解来求解）
+# 题意分析：第 i 阶可以由 i-1 阶跨一阶得到，也可以由 i-2 阶跨两阶得到，因此是 i-1 和 i-2 的种类之和。
+# 时间复杂度：O(N)
+# 空间复杂度：O(N)
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        dp = [1, 1]     # 斐波那契数列，这里补了 n=0 时结果为 1，方便后面计算。
+        for i in range(2, n+1):
+            dp.append(dp[i-1] + dp[i-2])   # 这里将之前的结果存在了 dp 数组里，因此空间复杂度是 O(N)
+        return dp[n]		# 因为补了 0 阶，所以输出的结果索引应该是 n，而不是 n-1，所以 for 循环也是到 n+1。
+		
+		
+# 方法四：斐波那契数列
+# 时间复杂度：O(N)
+# 空间复杂度：O(1)
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        first, second = 1, 1    # 注意这两个的取值（若不补 n=0 那么输不出来 1）
+        for i in range(n-1):    # 注意 for 循环的区间！！
+            first, second = second, first + second   # 这里没有存，只是把之前的数值更新了，因此空间复杂度是 O(1)
+        return second
+		
+		
+# 方法五：Binets 方法
+# 时间复杂度：O(lgN)
+# 空间复杂度：O(1)
+import numpy as np
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        Q0 = np.array([[1, 1], [1, 0]])
+        res = Q0
+        for i in range(n-1):
+            res = np.dot(res, Q0)
+        return res[0][0]
+    
+        # res = np.array([[1, 1], [1, 0]])
+        # if n == 1:
+        #     return 1
+        # else:
+        #     for i in range(n-1):
+        #         # res = np.dot(res, res)   # 是 Q0 的 n-1 次方，而这个语句每次的 res 都更新了，所以这里造成错误！
+        #     return res[0][0]
+
+
+
+# 方法六：斐波那契公式
+# 时间复杂度：O(lgN)
+# 空间复杂度：O
+class Solution:
+    def climbStairs(self, n: int) -> int:
+        res = 1/(5**0.5) * (((1+(5**0.5))/2)**(n+1) - ((1-(5**0.5))/2)**(n+1))   # 这里要是 n+1，因为公式里包含了 n=0！
+        return int(res)

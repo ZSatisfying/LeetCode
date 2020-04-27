@@ -1,0 +1,86 @@
+【1】输入多组
+while 1:
+    try:
+        a, b = list(map(int, input().split()))
+        print(a+b)
+    except:
+        break    
+		
+	
+【2】输入k组
+t = int(input())
+for _ in range(t):
+    a, b = list(map(int, input().split()))
+    print(a+b)
+	
+	
+【3】输入多组，0结束
+while True:
+    try:
+        a, b = list(map(int, input().split()))
+        if a != 0 or b !=0:
+            print(a+b)
+    except:
+        break
+        
+		
+【4】输入多组数组，0结束
+while True:
+    nums = list(map(int, input().split()))
+    N = nums[0]
+    if N == 0:
+        break
+    else:
+        print(sum(nums[1:]))
+		
+		
+【5】输入k组数组
+t = int(input())
+for _ in range(t):
+    nums = list(map(int, input().split()))
+    print(sum(nums[1:]))
+
+
+【6】输入多组数组
+while True:
+    try:
+        nums = list(map(int, input().split()))
+        print(sum(nums[1:]))
+    except:
+        break
+		
+		
+【7】输入多组数组
+while True:
+    try:
+        nums = list(map(int, input().split()))
+        print(sum(nums))
+    except:
+        break
+		
+		
+【8】一个字符串排序
+n = int(input())
+s = input().split()
+s.sort()
+print(" ".join(s))
+
+
+【9】多组字符串排序（空格隔开）
+while True:
+    try:
+        s = input().split()
+        s.sort()
+        print(" ".join(s))
+    except:
+        break
+		
+		
+【10】多组字符串排序（逗号隔开）
+while True:
+    try:
+        s = input().split(',')
+        s.sort()
+        print(",".join(s))
+    except:
+        break

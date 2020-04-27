@@ -1,0 +1,85 @@
+# 方法一：暴力法。
+# 时间复杂度：O(n^3)。超时。
+# 加入sorted函数是为了结果中不出现重复的结果。
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        l = len(nums)
+        result = []
+        for i in range(l-2):
+            for j in range(i+1, l-1):
+                for m in range(j+1, l):
+                    if nums[i]+nums[j]+nums[m] == 0 and sorted([nums[i], nums[j], nums[m]]) not in result:
+                        result.append(sorted([nums[i], nums[j], nums[m]]))
+        return result
+		
+
+# 方法二：哈希表。先固定两个数（两层循环），再找第三个满足条件的值，方法类似于【Two Sum】那道题。
+# 运行正确，但提交结果超时。
+# 时间复杂度：O(n^2)
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        l = len(nums)
+        result =[]
+        hashmap = {}
+        while(l):   # 这里是小写字母l，不是一。即while(len(nums))。为了防止数组为空下面的hashmap[nums[0]] = 0 出现错误！
+            hashmap[nums[0]] = 0
+            for index1, num1 in enumerate(nums):
+                for index2, num2 in enumerate(nums[index1+1:l], index1 + 1) :
+                    if -(num1+num2) in hashmap and hashmap[-(num1+num2)] != index1 and hashmap[-(num1+num2)] != index2:
+                        if sorted([num1, num2, -(num1+num2)]) not in result:
+                            result.append(sorted([num1, num2, -(num1+num2)]))
+                    hashmap[num2] = index2
+            return result
+        return []
+		
+		
+# 方法三：双指针。选择一个C位，我选的是第二个元素（不为空的前提下），然后每次大循环都low=0，high=length-1。每大循环一次变换一次C位（加一）
+# 运行正确，但提交结果超时。
+# 时间复杂度：O(n^2)
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        nums.sort()
+        length = len(nums)
+        indexC = 1
+        while(indexC < length - 1):
+            low, high = 0, length-1
+            while(low < indexC and high > indexC):
+                if nums[low] + nums[high] == -nums[indexC]:
+                    if [nums[low], nums[indexC], nums[high]] not in result:
+                        result.append([nums[low], nums[indexC], nums[high]])
+                    low, high = low + 1, high - 1 
+                elif nums[low] + nums[high] > -nums[indexC]:
+                    high = high - 1
+                else:
+                    low = low + 1
+            indexC = indexC + 1
+        return result
+		
+		
+# 方法四：双指针。与方法三不同之处在于：程序自动地跳过重复元素（节省了很多时间）。
+# 时间复杂度：O(n^2)
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        result = []
+        nums.sort()
+        l = len(nums)
+        for i in range(l):
+            if i > 0 and nums[i] == nums[i-1]:   # 这步意义在于：跳过重复的C位元素。
+                continue
+            low, high = i+1, l-1
+            while(low < high):
+                tmp = nums[i] + nums[low] + nums[high]
+                if tmp == 0:
+                    result.append([nums[i], nums[low], nums[high]])
+                    while(low < high and nums[low] == nums[low+1]):  # 跳过重复的low位元素
+                        low = low + 1
+                    while(low < high and nums[high] == nums[high-1]):  # 跳过重复的high位元素
+                        high = high - 1
+                    low = low + 1
+                    high = high - 1
+                elif tmp > 0:
+                    high = high - 1
+                else:
+                    low = low + 1
+        return result

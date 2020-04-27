@@ -1,0 +1,109 @@
+# 方法一：递归（需要注意的是，类内递归调用自身函数需要使用self，不然会把它当作类外函数调用，会出现“函数未定义”的情况！）
+# 时间复杂度：O(n)，递归方程：T(n) = 2 × T(n/2) + 1
+# 空间复杂度：最坏O(n)，平均O(logn)
+
+# 第一种写法
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        result = []
+        def f(root):
+            if not root:
+                return 
+            else:
+                f(root.left)
+                result.append(root.val)
+                f(root.right)
+            return result
+        return f(root)
+
+# 第二种写法
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        f = self.inorderTraversal
+        return f(root.left) + [root.val] + f(root.right) if root else []
+
+# 第三种写法		
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        result = []
+        if not root:
+            return []
+        result += self.inorderTraversal(root.left)   # 需要加self！！！
+        result.append(root.val)
+        result += self.inorderTraversal(root.right)
+        return result
+		
+		
+# 方法二：栈
+# 时间复杂度：O(n)
+# 空间复杂度：O(n)
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        result, stack, p = [], [], root
+        while p or stack:
+            while p:
+                stack.append(p)
+                p = p.left
+            tmp = stack.pop()
+            result.append(tmp.val)
+            p = tmp.right
+        return result
+		
+        
+# 方法三：颜色标记法（有递归容易理解的优点，也有栈高效的优点）
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution:
+    def inorderTraversal(self, root: TreeNode) -> List[int]:
+        WHITE, GRAY = 0, 1
+        result = []
+        stack = [(WHITE, root)]
+        while stack:
+            color, tmp = stack.pop()
+            if not tmp:
+                continue
+            if color == WHITE:
+                stack.append((WHITE, tmp.right))
+                stack.append((GRAY, tmp.val))
+                stack.append((WHITE, tmp.left))
+            else:
+                result.append(tmp)
+        return result
+		
+		
+# 方法四：莫里斯遍历
+# 时间复杂度：O(n)
+# 空间复杂度：O(n)

@@ -1,0 +1,18 @@
+# 方法：从终点的贪心算法（以终点从小到大排序，选择第一个，删除与它相交的区间（这里用flag=0表示删除），然后再选择区间结尾最小的那个区间，再删除……）
+# 时间复杂度：O(nlogn)
+# 时间复杂度：O(1)
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        if len(intervals) == 0 or  len(intervals) == 1:
+            return 0
+        new_list = sorted(intervals, key=lambda x: x[1])
+        l = len(new_list)
+        flag = [1] * l
+        for i in range(l-1):
+            if flag[i]:
+                for j in range(i+1, l):
+                    if new_list[j][0] < new_list[i][-1]:
+                        flag[j] = 0
+                    else:
+                        continue
+        return flag.count(0)

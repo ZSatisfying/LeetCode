@@ -1,0 +1,28 @@
+# 方法：用两个栈
+# 用两个栈，一个存放元素，另一个栈顶始终存放当前最小元素。注意：Stack 弹出元素时，要判断是不是当前最小元素，若是则 minStack 也要弹出栈顶。
+# 时间复杂度：O(n)
+class MinStack:
+    def __init__(self):
+        """
+        initialize your data structure here.
+        """
+        self.Stack = []
+        self.minStack = []
+
+    def push(self, x: int) -> None:
+        self.Stack.append(x)
+        if not self.minStack or x <= self.minStack[-1]:   # 这里是 x<=，而不是 x<，不然会出错！
+            self.minStack.append(x)
+
+    def pop(self) -> None:
+        if self.Stack.pop() == self.minStack[-1]:   # 如果弹出元素是最小元素，那么也应该把最小栈中的栈顶元素弹出
+            self.minStack.pop()
+        # self.Stack.pop()      # 这样不对
+
+    def top(self) -> int:
+        return self.Stack[-1]
+
+    def getMin(self) -> int:
+        return self.minStack[-1]
+		
+		

@@ -1,0 +1,27 @@
+# 方法一：暴力法（三次遍历）
+# 时间复杂度：O(n^3)
+# 超时，略
+
+
+# 方法二：双指针法（两次遍历）
+# 在每次循环中，首先固定第一个指针 p，然后定义双指针 i, j 分别指向 p+1 和 end。然后计算三者之和和 target 比较。若和小于 target，则i++，否则j--。
+# 时间复杂度：O(n^2)
+class Solution:
+    def threeSumClosest(self, nums: List[int], target: int) -> int:
+        l = len(nums)
+        nums.sort()
+        result = float("inf")
+        i, j= 1, l-1
+        for p in range(l-2):   # p 是 [0, l-2]，i 是 [p+1, j]，j 是 [i, end]
+            i, j = p+1, l-1
+            while i < j:
+                tmp = nums[p] + nums[i] + nums[j]
+                if tmp == target:
+                    return tmp
+                elif tmp < target:
+                    result = tmp if abs(tmp-target) < abs(result-target) else result
+                    i = i + 1
+                else:
+                    result = tmp if abs(tmp-target) < abs(result-target) else result
+                    j = j - 1
+        return result

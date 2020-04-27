@@ -1,0 +1,49 @@
+# 方法一：栈
+# 时间复杂度：O(n)
+class Solution:
+    def removeOuterParentheses(self, S: str) -> str:
+        result = ''
+        stack = []
+        start = 0
+        for i in range(len(S)):
+            if S[i] == '(':   # 因为这里有效括号是()，)(这并不是有效括号，所以只要遇到（就进栈，）就出栈是正确的！
+                stack.append(S[i])
+            else:
+                stack.pop()
+            if stack == []:
+                result += S[start+1:i]   # 这一步就相当于删掉了最外层的括号（利用了字符串切片）
+                start = i+1
+        return result
+		
+		
+# 方法二：计数法。只要（ 和 ）的数量相同，那么就表明找到一个原语分解。
+# 时间复杂度：O(n)
+class Solution:
+    def removeOuterParentheses(self, S: str) -> str:
+        num1, num2 = 0, 0
+        start = num1 + num2
+        result =''
+        for i in range(len(S)):
+            if S[i] == '(':
+                num1 += 1
+            else:
+                num2 += 1
+            if num1 == num2:
+                result += S[start+1:num1+num2-1]   # 注意这里的字符串切片空间（保证去掉最外面括号）
+                start = num1 + num2
+        return result
+		
+		
+# 方法三：双指针法。遇到（ cnt加一；遇到 ）cnt减一，如果cnt==0，那么利用start，end指针对字符串进行切片。
+# 时间复杂度：O(n)
+class Solution:
+    def removeOuterParentheses(self, S: str) -> str:
+        cnt, start, end = 0, 0, 0
+        result =''
+        for i in range(len(S)):
+            cnt +=1 if S[i] == '(' else -1
+            if cnt == 0:
+                end = i
+                result += S[start+1: end]
+                start = end+1
+        return result

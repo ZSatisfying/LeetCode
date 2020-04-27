@@ -1,0 +1,72 @@
+# 方法一：暴力法
+# 时间复杂度：O(n2*k)
+def allunique(string):    # 判断是否是无重复子串
+    if len(set(string)) == len(string):
+        return True
+    return False
+
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if s == "":
+            return 0
+        result = 1    # result初始化为1，因为对于"bbbb"的情况，result=1，而allunique函数输出的是false
+        for i in range(len(s)-1):
+            for j in range(i+1, len(s)):
+                if allunique(s[i:j+1]):   # 取切片时间复杂度是O(k)，k是切片长度
+                    result = j -i + 1 if result < j - i + 1 else result
+        return result
+		
+		
+# 方法二：滑窗（滑动窗口左右两边界均是闭的，最开始滑动窗口里没有元素，即 left = 0,right = -1，res 用来存储最长窗口的长度，初始为 0。移动窗口，窗口向右判断下一个元素是否已存在于窗口内，如果不存在，则将该元素加入到窗口中，即 right + 1,左边界不动。如果窗口内已经存在该元素，则将该元素加入到窗口中，即 right + 1 ，同时将窗口左边界移到窗口中已存在的元素的位置，即 left + 1 直到窗口中重复元素的位置为止。重复上述步骤。在窗口滑动的过程中，每得到一个新的窗口，都将与 res 中的值比较，res 中始终存放的是之前所有窗口的最长长度。）
+# 时间复杂度：O(n)
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        left, right = 0, 0
+        max_len = 0 
+        tmp = ""
+        if len(set(s)) == 1:
+            return 1
+        while right < len(s):
+            if s[right] not in tmp:
+                tmp = tmp + s[right]
+                right += 1   
+            else:
+                tmp = tmp[1:] + s[right]   # 去除字符串最左边那个
+                left += 1
+                while s[right] in tmp[:-1]:   # 如果一直存在相同的，那么一直去除左边的
+                    tmp = tmp[1:]
+                    left += 1
+                right += 1
+            max_len = right - left if max_len < right - left else max_len    # 这里长度是right-left，不加1，因为right加了1
+        return max_len
+		
+		
+# 方法三：双指针（其实和滑窗有点像！）
+
+
+# 方法四：动态规划（dp存储以第j个字符结尾的最长无重复子串，所以最后返回值是max(dp)）
+# 状态转移：
+# 	1. 若s[j]不存在于s[:j]，那么dp[j]=dp[j-1]+1;
+#	2. 若s[j]存在于s[:j]中，但是s[j]和之前重复的那个元素之间的距离d>dp[j-1]，那么不对当前产生影响，dp[j]=dp[j-1]+1，例如：s="abcdba"，第二个a已经不对它产生影响，因为到第二个b的时候，无重复子串已经转移成"cdb"，已经不包含之前的a；
+#	3. 若d<dp[j-1]，那么dp[j]=d
+# 时间复杂度：O(n)
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if not s:
+            return 0
+        dp = [0] * len(s)
+        dp[0] = 1   # 只有一个元素时，最长无重复子串长度为1
+        j = 0
+        dic = {}
+        dic[s[0]] = 0
+        for j in range(1, len(s)):
+            if s[j] not in s[:j]:
+                dp[j] = dp[j-1] + 1   # dic存储个元素的索引，后面出现重复字符时需要更新！
+                dic[s[j]] = j
+            elif j - dic[s[j]] > dp[j - 1]:
+                    dp[j] = dp[j - 1] + 1
+                    dic[s[j]] = j
+            else:
+                dp[j] = j - dic[s[j]]
+                dic[s[j]] = j
+        return max(dp)

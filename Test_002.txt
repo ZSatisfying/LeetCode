@@ -1,0 +1,72 @@
+# 方法一：类型转换
+# 把链表的元素读到一个列表中，然后将列表转换为数值类型，再进行相加运算。
+# 时间复杂度：O(2m+2n)
+# 利用列表进行计算不如用字符串进行计算方便，因为用字符串只需用int()进行转换即可，而用列表还要除十、模十进行计算才能得到数值。
+
+
+# 方法二：类型转换（Python 的链表操作还不是很明白，需要自己单步调试一下）
+# 把链表的元素读入到一个字符串中，然后将字符串转换为数值类型，再进行相加运算。
+# 时间复杂度：O(2m+2n)
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        str1, str2 = "", ""
+        p1, p2 = l1, l2
+        
+        # 将链表元素放到字符串中
+        while p1 is not None:
+            str1 = str(p1.val) + str1  # 拼接字符串
+            p1 = p1.next
+        while p2 is not None:
+            str2 = str(p2.val) + str2
+            p2 = p2.next
+            
+        # 进行相加运算
+        result = int(str1) + int(str2)
+        
+        # 将结果逐位放到链表（这之后不太明白）
+        result = str(result)
+        l3 = l4 = ListNode(0)  # 定义了两个节点 l3 和 l4，分别初始化为值为零，next 指针为空。这样写表示 l3 和 l4 完全一样，因此下面对 l3 的操作同样也改变了 l4。
+        for index in range(len(result)-1, -1, -1):  # 从字符串最后一位到第一位进行索引
+            l3.next = ListNode(int(result[index]))  # 本来是不存在l3.next的，这一步相当于定义了l3.next节点，并且进行了赋值
+            l3 = l3.next  
+			
+        return l4.next
+        
+		
+# 方法三：逐位相加
+# 将链表每一位对应相加，若无进位carry=0；若有进位carry=1。位之和是对应两数之和再加上进位标志位再模十（carry要么为0，要么为1）；carry为对应两数之和再加上进位标志位再整除十。
+# 时间复杂度：O(max(m, n))
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.next = None
+
+class Solution:
+    def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
+        result, carry = [], 0     # 进位标志位初始化为0
+        while(l1 or l2 or carry):
+            if l1 == None:        # 这两步是防止 l1 或者 l2 为空，则不会再有 next 属性。
+                l1 = ListNode(0)
+            if l2 == None:
+                l2 = ListNode(0)
+            # result.append((l1.val + l2.val) % 10 + carry)   # 这样写不对，因为要加上进位标志位才可以模十。
+            result.append((l1.val + l2.val + carry) % 10)
+            carry = (l1.val + l2.val + carry) // 10
+            l1 = l1.next
+            l2 = l2.next
+			
+        # return result        # result是个列表，题目要求返回链表，奇怪的是返回了列表也成功提交了。下面改为链表之后，时间复杂度变高。
+		
+			# 输出链表
+            tmp = re = ListNode(0)        
+            for i in range(len(result)):
+                tmp.next = ListNode(result[i])
+                tmp = tmp.next
+        return re.next

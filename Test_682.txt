@@ -1,0 +1,23 @@
+# 方法一：栈
+# 时间复杂度：O(n)，只遍历了一次。
+# 空间复杂度：O(n)，用了一个栈的存储空间。
+# 我遇到的问题：最初没有做类型转换，因为字符串的*表示复制，字符串的+表示拼接，所以造成了结果错误！
+class Solution:
+    def calPoints(self, ops: List[str]) -> int:
+        stack = []
+        for item in ops:
+            if item not in ['+', 'D', 'C']:
+                stack.append(item)
+            elif item == '+':
+                tmp1 = stack.pop()
+                tmp2 = stack.pop()
+                stack.append(int(tmp2))
+                stack.append(int(tmp1))
+                stack.append(int(tmp1)+int(tmp2))   # 先转换为整型再做加法
+            elif item == 'D':
+                tmp = stack.pop()
+                stack.append(int(tmp))
+                stack.append(int(tmp)*2)   # 先转换为整型再做乘法
+            elif item == 'C':
+                stack.pop()
+        return sum(list(map(int, stack)))
